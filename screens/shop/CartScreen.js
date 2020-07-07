@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
@@ -13,8 +13,10 @@ import Colors from "../../constants/Colors";
 import CartItems from "../../components/shop/CartItems";
 import * as cartActions from "../../store/actions/Cart";
 import * as orderActions from "../../store/actions/orders";
+import * as productActions from "../../store/actions/Products";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../../components/UI/HeaderButton";
+
 // import CartItems from "../../components/shop/CartItems";
 
 const CartScreen = (props) => {
@@ -33,10 +35,13 @@ const CartScreen = (props) => {
         productPrice: state.cart.items[key].price,
         quantity: state.cart.items[key].quantity,
         productTotal: state.cart.items[key].total,
+        prodImg: state.cart.items[key].imageUrl,
       });
     }
+
     return cartItems.sort((a, b) => (a.productId > b.productId ? 1 : 1));
   });
+  // console.log(cartItem.prodImg);
 
   const loadOffer = async () => {
     try {
@@ -61,7 +66,7 @@ const CartScreen = (props) => {
       loadOffer();
       setTimeout(() => {
         setIsTouched(true);
-      }, 1000);
+      }, 1500);
     }
   };
   let validityContainer;
@@ -117,24 +122,18 @@ const CartScreen = (props) => {
           <Button title="Check" onPress={offerHandler} />
         </View>
       </View>
-      {/* {validity === false ? (
-        <View style={styles.offerSection}>
-          <Text>Please Enter a valid coupon code!!!</Text>
-        </View>
-      ) : (
-        <View style={styles.offerSection}>
-          <Text>SUCCESS</Text>
-        </View>
-      )} */}
+
       {validityContainer}
       <FlatList
         data={cartItem}
         keyExtractor={(item) => item.productId}
         renderItem={(itemData) => (
           <CartItems
+            id={itemData.item.productId}
             quantity={itemData.item.quantity}
             title={itemData.item.productTitle}
             amount={itemData.item.productPrice}
+            source={itemData.item.prodImg}
             deletable
             onRemove={() => {
               dispatch(cartActions.deleteCart(itemData.item.productId));

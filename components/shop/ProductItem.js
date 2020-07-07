@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "white",
     height: 300,
-    zIndex: 2,
   },
   touchable: {
     borderRadius: 10,

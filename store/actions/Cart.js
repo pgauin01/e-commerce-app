@@ -1,6 +1,7 @@
 export const ADD_TO_CART = "ADD_TO_CART";
 export const DELETE_CART = "DELETE_CART";
 export const OFFER = "OFFER";
+export const UPDATE_QTY = "UPDATE_QTY";
 
 export const addToCart = (product) => {
   return { type: ADD_TO_CART, product: product };
@@ -8,6 +9,13 @@ export const addToCart = (product) => {
 
 export const deleteCart = (prodId) => {
   return { type: DELETE_CART, productId: prodId };
+};
+
+export const updateQty = (qty, prodId, total) => {
+  return {
+    type: UPDATE_QTY,
+    productData: { productqty: qty, productId: prodId },
+  };
 };
 
 export const offer = (inputData) => {

@@ -31,6 +31,7 @@ const SearchItem = (props) => {
 
 const styles = StyleSheet.create({
   searchItem: {
+    zIndex: 2,
     width: "100%",
     height: 50,
     flexDirection: "row",

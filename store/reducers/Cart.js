@@ -1,16 +1,13 @@
 import CartItem from "../../modals/cartItem";
-import { ADD_TO_CART } from "../actions/Cart";
-import { DELETE_CART } from "../actions/Cart";
+import { ADD_TO_CART, OFFER, DELETE_CART, UPDATE_QTY } from "../actions/Cart";
 import { ORDER } from "../actions/orders";
 import { DELETE_ITEM } from "../actions/Products";
-import { OFFER } from "../actions/Cart";
 
 const initialState = {
   items: {},
   totalAmount: 0,
   validity: false,
 };
-// console.log(totalAmount);
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -18,13 +15,15 @@ export default (state = initialState, action) => {
       const addedProduct = action.product;
       const prodPrice = addedProduct.price;
       const prodTitle = addedProduct.title;
+      const prodImage = addedProduct.imageUrl;
       let updatedorNewcartItem;
       if (state.items[addedProduct.id]) {
         updatedorNewcartItem = new CartItem(
           state.items[addedProduct.id].quantity + 1,
           prodTitle,
           prodPrice,
-          state.items[addedProduct.id].total + prodPrice
+          state.items[addedProduct.id].total + prodPrice,
+          prodImage
         );
         return {
           ...state,
@@ -32,7 +31,13 @@ export default (state = initialState, action) => {
           totalAmount: state.totalAmount + prodPrice,
         };
       } else {
-        updatedorNewcartItem = new CartItem(1, prodTitle, prodPrice, prodPrice);
+        updatedorNewcartItem = new CartItem(
+          1,
+          prodTitle,
+          prodPrice,
+          prodPrice,
+          prodImage
+        );
         return {
           ...state,
           items: { ...state.items, [addedProduct.id]: updatedorNewcartItem },
@@ -41,22 +46,23 @@ export default (state = initialState, action) => {
       }
     case DELETE_CART:
       const selectedProd = state.items[action.productId];
-      const currentQty = selectedProd.quantity;
+      // const currentQty = selectedProd.quantity;
       let updatedCartItems;
-      if (currentQty > 1) {
-        const updateProd = new CartItem(
-          selectedProd.quantity - 1,
-          selectedProd.title,
-          selectedProd.price,
-          selectedProd.total - selectedProd.price
-        );
-        updatedCartItems = { ...state.items, [action.productId]: updateProd };
-      } else {
-        updatedCartItems = { ...state.items };
-        delete updatedCartItems[action.productId];
-      }
+      // if (currentQty > 1) {
+      //   const updateProd = new CartItem(
+      //     selectedProd.quantity - 1,
+      //     selectedProd.title,
+      //     selectedProd.price,
+      //     selectedProd.total - selectedProd.price,
+      //     selectedProd.imageUrl
+      //   );
+      //   updatedCartItems = { ...state.items, [action.productId]: updateProd };
+      // } else {
+      updatedCartItems = { ...state.items };
+      delete updatedCartItems[action.productId];
+      // }
 
-      updatedtotalAmount = state.totalAmount - selectedProd.price;
+      let updatedtotalAmount = state.totalAmount - selectedProd.total;
 
       if (updatedtotalAmount < 0) {
         updatedtotalAmount = 0;
@@ -68,6 +74,30 @@ export default (state = initialState, action) => {
         ...state,
         items: updatedCartItems,
         totalAmount: updatedtotalAmount,
+      };
+    case UPDATE_QTY:
+      const selectednewProd = state.items[action.productData.productId];
+      const currentnewQty = action.productData.productqty;
+      const currentTotal = selectednewProd.price * currentnewQty;
+      const updatednewProd = new CartItem(
+        currentnewQty,
+        selectednewProd.title,
+        selectednewProd.price,
+        selectednewProd.price * currentnewQty,
+        selectednewProd.imageUrl
+      );
+      const updatednewCartItems = {
+        ...state.items,
+        [action.productData.productId]: updatednewProd,
+      };
+
+      const newtotalAmount = state.totalAmount - selectednewProd.total;
+      const totalAmount = newtotalAmount + currentTotal;
+
+      return {
+        ...state,
+        items: updatednewCartItems,
+        totalAmount: totalAmount,
       };
     case ORDER:
       return initialState;

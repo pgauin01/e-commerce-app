@@ -66,6 +66,7 @@ export default (state = initialState, action) => {
 
       if (updatedtotalAmount < 0) {
         updatedtotalAmount = 0;
+        updatedCartItems = [];
       } else {
         updatedtotalAmount;
       }

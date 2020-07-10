@@ -5,7 +5,8 @@ import Thunk from "redux-thunk";
 import ProductReducer from "./store/reducers/Products";
 import CartReducer from "./store/reducers/Cart";
 import OrderReducer from "./store/reducers/orders";
-import ShopNavigator from "./navigation/Shopnavigator";
+import NavigationContainer from "./navigation/NavigationContainer";
+import AuthReducer from "./store/reducers/Auth";
 import { AppLoading } from "expo";
 import * as Font from "expo-font";
 import { composeWithDevTools } from "redux-devtools-extension";
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   products: ProductReducer,
   cart: CartReducer,
   orders: OrderReducer,
+  auth: AuthReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(Thunk));
@@ -38,7 +40,7 @@ export default function App() {
   }
   return (
     <Provider store={store}>
-      <ShopNavigator />
+      <NavigationContainer />
     </Provider>
   );
 }

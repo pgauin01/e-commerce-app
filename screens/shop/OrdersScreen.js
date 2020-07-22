@@ -16,6 +16,7 @@ import Colors from "../../constants/Colors";
 const OrdersScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const order = useSelector((state) => state.orders.orders);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -44,11 +45,13 @@ const OrdersScreen = (props) => {
     <FlatList
       data={order}
       keyExtractor={(item) => item.id}
+      contentContainerStyle={styles.list}
       renderItem={(itemData) => (
         <OrderItem
           amount={itemData.item.totalAmount}
           date={itemData.item.redableDate}
           items={itemData.item.items}
+          address={itemData.item.address.data}
         />
       )}
     />
@@ -77,6 +80,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  list: {
+    flexDirection: "column-reverse",
   },
 });
 

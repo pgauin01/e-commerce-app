@@ -15,6 +15,7 @@ const StartupScreen = (props) => {
   useEffect(() => {
     const tryLogin = async () => {
       const userData = await AsyncStorage.getItem("userData");
+      const refreshToken = await AsyncStorage.getItem("refreshToken");
       if (!userData) {
         props.navigation.navigate("Auth");
         return;
@@ -23,13 +24,12 @@ const StartupScreen = (props) => {
       const { token, userId, expiryDate } = transformedData;
       const expirationDate = new Date(expiryDate);
       if (expirationDate <= new Date() || !token || !userId) {
-        props.navigation.navigate("Auth");
-        return;
+        await dispatch(authActions.refreshData(refreshToken));
+        props.navigation.navigate("Shop");
       }
-      const expirationTime = expirationDate.getTime() - new Date().getTime();
-
+      // const expirationTime = expirationDate.getTime() - new Date().getTime();
+      dispatch(authActions.authenticate(token, userId));
       props.navigation.navigate("Shop");
-      dispatch(authActions.authenticate(token, userId, expirationTime));
     };
 
     tryLogin();

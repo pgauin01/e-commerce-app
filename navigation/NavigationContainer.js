@@ -3,10 +3,20 @@ import { useSelector } from "react-redux";
 import { NavigationActions } from "react-navigation";
 
 import ShopNavigator from "./Shopnavigator";
+import ShopNavigatorAdmin from "./ShopnavigatorAdmin";
 
 const NavigationContainer = (props) => {
   const navRef = useRef();
   const isAuth = useSelector((state) => !!state.auth.token);
+  const isAdmin = useSelector((state) => state.admin.isAdmin);
+  // console.log(`nav${isAdmin}`);
+
+  let Navigator;
+  if (isAdmin) {
+    Navigator = <ShopNavigator ref={navRef} />;
+  } else {
+    Navigator = <ShopNavigatorAdmin ref={navRef} />;
+  }
 
   useEffect(() => {
     if (!isAuth) {
@@ -16,7 +26,7 @@ const NavigationContainer = (props) => {
     }
   }, [isAuth]);
 
-  return <ShopNavigator ref={navRef} />;
+  return Navigator;
 };
 
 export default NavigationContainer;

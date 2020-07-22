@@ -11,16 +11,17 @@ import ProductsOverviewScreen from "../screens/shop/ProductsOverviewScreen";
 import ProductDetailScreen from "../screens/shop/ProductDetailsScreen";
 import OrdersScreen from "../screens/shop/OrdersScreen";
 import CartScreen from "../screens/shop/CartScreen";
-import UserProductsScreen from "../screens/user/UseProductsScreen";
-import EditProductScreen from "../screens/user/EditProductScreen";
+// import UserProductsScreen from "../screens/user/UseProductsScreen";
+// import EditProductScreen from "../screens/user/EditProductScreen";
+import GoogleAuthScreen from "../screens/user/GoogleAuthScreen";
+// import PhoneAuthScreen from "../screens/user/phoneVerification";
+
 import AuthScreen from "../screens/user/AuthScreen";
 import SearchScreen from "../screens/shop/SearchScreen";
 import StartupScreen from "../screens/StartupScreen";
 import AddressScreen from "../screens/user/AddressScreen";
-import GoogleAuthScreen from "../screens/user/GoogleAuthScreen";GoogleAuthScreen
 import EditAddressScreen from "../screens/user/EditAddressScreen";
 import * as authActions from "../store/actions/Auth";
-import * as adminActions from "../store/actions/Admin";
 
 import Colors from "../constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
@@ -76,24 +77,24 @@ const OrdersNavigator = createStackNavigator(
   }
 );
 
-const adminNavigator = createStackNavigator(
-  {
-    UserProduct: UserProductsScreen,
-    EditProduct: EditProductScreen,
-  },
-  {
-    navigationOptions: {
-      drawerIcon: (drawerConfig) => (
-        <Ionicons
-          name={Platform.OS === "android" ? "md-create" : "ios-create"}
-          size={23}
-          color={drawerConfig.tintColor}
-        />
-      ),
-    },
-    defaultNavigationOptions: defaultNavOptions,
-  }
-);
+// const adminNavigator = createStackNavigator(
+//   {
+//     UserProduct: UserProductsScreen,
+//     EditProduct: EditProductScreen,
+//   },
+//   {
+//     navigationOptions: {
+//       drawerIcon: (drawerConfig) => (
+//         <Ionicons
+//           name={Platform.OS === "android" ? "md-create" : "ios-create"}
+//           size={23}
+//           color={drawerConfig.tintColor}
+//         />
+//       ),
+//     },
+//     defaultNavigationOptions: defaultNavOptions,
+//   }
+// );
 
 const SearchNavigator = createStackNavigator(
   {
@@ -138,7 +139,7 @@ const ShopNavigator = createDrawerNavigator(
     Search: SearchNavigator,
     Address: AddressNavigator,
     Orders: OrdersNavigator,
-    Admin: adminNavigator,
+    // Admin: adminNavigator,
   },
   {
     contentOptions: {
@@ -155,7 +156,6 @@ const ShopNavigator = createDrawerNavigator(
               color={Colors.primary}
               onPress={() => {
                 dispatch(authActions.logout());
-                dispatch(adminActions.adminLogout());
                 // props.navigation.navigate("Auth");
               }}
             />
@@ -170,6 +170,7 @@ const AuthNavigator = createStackNavigator(
   {
     Auth: AuthScreen,
     GoogleAuth: GoogleAuthScreen,
+    // PhoneAuth: PhoneAuthScreen,
   },
   {
     defaultNavigationOptions: defaultNavOptions,

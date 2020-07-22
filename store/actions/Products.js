@@ -3,8 +3,9 @@ export const CREATE_ITEM = "CREATE_ITEM";
 export const UPDATE_ITEM = "UPDATE_ITEM";
 export const SET_PRODUCTS = "SET_PRODUCTS";
 import Products from "../../modals/Products";
+import firebase from "../../firebase";
 
-export const deleteItem = (productId) => {
+export const deleteItem = (productId, ImageName) => {
   return async (dispatch, getState) => {
     const token = getState().auth.token;
     const response = await fetch(
@@ -16,6 +17,23 @@ export const deleteItem = (productId) => {
     if (!response.ok) {
       throw new Error("Something went wrong!!");
     }
+    var desertRef = firebase
+      .storage()
+      .ref()
+      .child(`Images/${ImageName}`);
+
+    // Delete the file
+    desertRef
+      .delete()
+      .then(function() {
+        // File deleted successfully
+
+        Alert.alert("Image Successfully deleted");
+      })
+      .catch(function(error) {
+        // Uh-oh, an error occurred!
+      });
+
     dispatch({ type: DELETE_ITEM, pid: productId });
   };
 };
@@ -41,14 +59,16 @@ export const setProducts = () => {
             resData[key].title,
             resData[key].imageUrl,
             resData[key].description,
-            resData[key].price
+            resData[key].price,
+            resData[key].imgName,
+            resData[key].isfeatured
           )
         );
       }
       dispatch({
         type: SET_PRODUCTS,
         products: updatedProducts,
-        userProducts: updatedProducts.filter((pro) => pro.ownerId === userId),
+        userProducts: updatedProducts,
       });
     } catch (err) {
       throw err;
@@ -56,7 +76,7 @@ export const setProducts = () => {
   };
 };
 
-export const createItem = (title, imageUrl, price, description) => {
+export const createItem = (title, imageUrl, price, description, imgName) => {
   return async (dispatch, getState) => {
     const token = getState().auth.token;
     const userId = getState().auth.userId;
@@ -73,11 +93,13 @@ export const createItem = (title, imageUrl, price, description) => {
           imageUrl,
           price,
           description,
+          imgName,
           ownerId: userId,
         }),
       }
     );
     const resData = await response.json();
+    console.log(resData);
     dispatch({
       type: CREATE_ITEM,
       productData: {
@@ -86,13 +108,14 @@ export const createItem = (title, imageUrl, price, description) => {
         imageUrl,
         price,
         description,
+        imgName,
         ownerId: userId,
       },
     });
   };
 };
 
-export const updateItem = (pid, title, imageUrl, description) => {
+export const updateItem = (pid, title, price, description) => {
   return async (dispatch, getState) => {
     const token = getState().auth.token;
     const response = await fetch(
@@ -104,8 +127,8 @@ export const updateItem = (pid, title, imageUrl, description) => {
         },
         body: JSON.stringify({
           title,
+          price,
           description,
-          imageUrl,
         }),
       }
     );
@@ -117,7 +140,6 @@ export const updateItem = (pid, title, imageUrl, description) => {
       pid: pid,
       productData: {
         title,
-        imageUrl,
         description,
       },
     });

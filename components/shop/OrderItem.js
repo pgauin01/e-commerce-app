@@ -26,9 +26,14 @@ const OrderItem = (props) => {
               quantity={cartItem.quantity}
               title={cartItem.productTitle}
               amount={cartItem.productTotal}
+
               // source={cartItem.imageUrl}
             />
           ))}
+          <View style={styles.delivery}>
+            <Text style={styles.totalAmount}>Delivery Address:</Text>
+            <Text style={styles.deliveryText}>{props.address}</Text>
+          </View>
         </View>
       )}
     </View>
@@ -62,6 +67,13 @@ const styles = StyleSheet.create({
   },
   detailsItem: {
     width: "100%",
+  },
+  delivery: {
+    flexDirection: "row",
+    paddingVertical: 10,
+  },
+  deliveryText: {
+    fontSize: 16,
   },
 });
 

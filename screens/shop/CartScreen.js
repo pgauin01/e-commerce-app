@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   TextInput,
+  Picker,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import Colors from "../../constants/Colors";
@@ -20,12 +21,40 @@ import CustomHeaderButton from "../../components/UI/HeaderButton";
 // import CartItems from "../../components/shop/CartItems";
 
 const CartScreen = (props) => {
+  const address = useSelector((state) => state.address.useraddress);
+  const loadedAddress = [];
+  for (const key in address) {
+    loadedAddress.push({
+      id: key,
+      name: address[key].name,
+      data: `${address[key].name}  ${address[key].street}`,
+      address: `${address[key].street}  ${address[key].building}`,
+      mobile: address[key].mobile,
+    });
+  }
   const [cart, setCart] = useState("");
   const [touched, setIsTouched] = useState(false);
   const [isLoading, setIsLoding] = useState(false);
+  const [addressChange, setAddressChange] = useState(0);
+
+  // console.log(addressChange);
+
   const dispatch = useDispatch();
   const validity = useSelector((state) => state.cart.validity);
   const TotalAmount = useSelector((state) => state.cart.totalAmount);
+
+  let DeliveryCharge;
+  let FinalAmount;
+  if (TotalAmount > 100) {
+    DeliveryCharge = 0;
+  } else if (TotalAmount < 100) {
+    DeliveryCharge = 30;
+  }
+
+  FinalAmount = TotalAmount + DeliveryCharge;
+
+  // console.log(loadedAddress);
+
   const cartItem = useSelector((state) => {
     const cartItems = [];
     for (const key in state.cart.items) {
@@ -41,7 +70,6 @@ const CartScreen = (props) => {
 
     return cartItems.sort((a, b) => (a.productId > b.productId ? 1 : 1));
   });
-  // console.log(cartItem.prodImg);
 
   const loadOffer = async () => {
     try {
@@ -51,13 +79,11 @@ const CartScreen = (props) => {
     }
   };
 
-  // useEffect(() => {
-  //   loadOffer();
-  // }, [loadOffer]);
-
   const onOrderHandler = async () => {
     setIsLoding(true);
-    await dispatch(orderActions.order(cartItem, TotalAmount));
+    await dispatch(
+      orderActions.order(cartItem, TotalAmount, loadedAddress[addressChange])
+    );
     setIsLoding(false);
   };
 
@@ -69,6 +95,11 @@ const CartScreen = (props) => {
       }, 1500);
     }
   };
+
+  const orderChangeHandler = (itemValue) => {
+    setAddressChange(itemValue);
+  };
+
   let validityContainer;
   if (touched && validity) {
     validityContainer = (
@@ -86,26 +117,95 @@ const CartScreen = (props) => {
       </View>
     );
   }
+  let orderButton;
+  if (loadedAddress.length === 0) {
+    orderButton = (
+      <Button
+        title="continue"
+        color={Colors.secondary}
+        onPress={() => {
+          props.navigation.navigate("EditAddress");
+        }}
+      />
+    );
+  }
+  if (loadedAddress.length > 0) {
+    orderButton = (
+      <Button
+        title="Order Now"
+        color={Colors.secondary}
+        disabled={cartItem.length === 0}
+        onPress={onOrderHandler}
+      />
+    );
+  }
+
+  if (cartItem.length == 0) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text>No Products Found in Cart..</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.cartscreen}>
+      {loadedAddress.length > 0 ? (
+        <View style={styles.address}>
+          <View style={styles.addressText}>
+            <Text style={styles.addText}>Address:</Text>
+          </View>
+          <View style={styles.addressPicker}>
+            <Picker
+              selectedValue={addressChange}
+              style={{ height: 30, width: "100%" }}
+              onValueChange={(itemValue) => orderChangeHandler(itemValue)}
+            >
+              {loadedAddress.map((el) => {
+                return (
+                  <Picker.Item key={el.id} label={el.data} value={el.id} />
+                );
+              })}
+            </Picker>
+          </View>
+        </View>
+      ) : null}
+
       <View style={styles.summary}>
-        <Text style={styles.summaryText}>
-          Total Amount:{" "}
-          <Text style={styles.price}>
-            ${Math.round(TotalAmount.toFixed(2) * 100) / 100}
-          </Text>
-        </Text>
+        <View>
+          <View style={styles.textPadd}>
+            <Text style={styles.summaryText}>
+              Cart Amount:
+              <Text style={styles.price}>
+                ${Math.round(TotalAmount.toFixed(2) * 100) / 100}
+              </Text>
+            </Text>
+          </View>
+          <View style={styles.textPadd}>
+            <Text style={styles.summaryText}>
+              DeliveryCharge:
+              <Text style={styles.price}>
+                ${Math.round(DeliveryCharge.toFixed(2) * 100) / 100}
+              </Text>
+            </Text>
+          </View>
+          <View style={styles.textPadd}>
+            <Text style={styles.summaryTextBold}>
+              Total Amount:
+              <Text style={styles.price}>
+                ${Math.round(FinalAmount.toFixed(2) * 100) / 100}
+              </Text>
+            </Text>
+          </View>
+        </View>
+
         {isLoading ? (
           <ActivityIndicator size="small" color={Colors.primary} />
         ) : (
-          <Button
-            title="Order Now"
-            disabled={cartItem.length === 0}
-            onPress={onOrderHandler}
-          />
+          orderButton
         )}
       </View>
+
       <View style={styles.couponContainer}>
         <Text style={styles.couponText}>
           Enter valid Coupon Code to get upto
@@ -166,6 +266,24 @@ const styles = StyleSheet.create({
   cartscreen: {
     margin: 20,
   },
+  address: {
+    backgroundColor: "white",
+    padding: 10,
+    marginBottom: 10,
+    flexDirection: "row",
+  },
+  addressText: {
+    width: "20%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  addText: {
+    fontFamily: "open-sans-bold",
+    fontSize: 16,
+  },
+  addressPicker: {
+    width: "80%",
+  },
   summary: {
     flexDirection: "row",
     alignItems: "center",
@@ -177,13 +295,20 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   summaryText: {
+    fontFamily: "open-sans",
+    fontSize: 16,
+  },
+  summaryTextBold: {
     fontFamily: "open-sans-bold",
-    fontSize: 18,
+    fontSize: 16,
   },
   price: {
     fontFamily: "open-sans",
     fontSize: 16,
-    color: Colors.primary,
+    // color: Colors.primary,
+  },
+  textPadd: {
+    paddingBottom: 5,
   },
   offerSection: {
     flexDirection: "row",

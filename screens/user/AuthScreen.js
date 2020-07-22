@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import Card from "../../components/UI/Card";
 import Input from "../../components/UI/Input";
 import Colors from "../../constants/Colors";
+import GoogleAuth from "../../screens/user/GoogleAuthScreen";
 import * as authActions from "../../store/actions/Auth";
 
 const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
@@ -98,6 +99,9 @@ const AuthScreen = (props) => {
     },
     [dispatchFormState]
   );
+  const phoneAuthHandler = () => {
+    props.navigation.navigate("PhoneAuth");
+  };
   return (
     <View style={styles.screen}>
       <LinearGradient colors={["#ffedff", "#ffe3ff"]} style={styles.gradient}>
@@ -148,6 +152,12 @@ const AuthScreen = (props) => {
             />
           </View>
         </Card>
+        <GoogleAuth {...props} />
+        {/* <Button
+          title="Login with Phone"
+          color={Colors.primary}
+          onPress={phoneAuthHandler}
+        /> */}
       </LinearGradient>
     </View>
   );

@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../../components/UI/HeaderButton";
 import * as productActions from "../../store/actions/Products";
+import * as adminActions from "../../store/actions/Admin";
 
 import ProductItem from "../../components/shop/ProductItem";
 import Colors from "../../constants/Colors";
@@ -16,14 +17,14 @@ const UserProductsScreen = (props) => {
       productId: id,
     });
   };
-  const deleteHandler = (id) => {
+  const deleteHandler = (id, imgName) => {
     Alert.alert("Are you sure?", "Do you really want to delete this item?", [
       { text: "No", style: "default" },
       {
         text: "Yes ",
         style: "destructive",
         onPress: () => {
-          dispatch(productActions.deleteItem(id));
+          dispatch(productActions.deleteItem(id, imgName));
         },
       },
     ]);
@@ -58,7 +59,9 @@ const UserProductsScreen = (props) => {
           <Button
             color={Colors.primary}
             title="Delete"
-            onPress={() => deleteHandler(itemData.item.id)}
+            onPress={() =>
+              deleteHandler(itemData.item.id, itemData.item.imgName)
+            }
           />
         </ProductItem>
       )}

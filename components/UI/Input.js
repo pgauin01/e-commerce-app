@@ -32,7 +32,7 @@ const Input = (props) => {
   const { onInputChange, id } = props;
 
   useEffect(() => {
-    if (inputState.touched || inputState.value.length > 0) {
+    if (inputState.touched || inputState.value.length > 0 || !props.required) {
       onInputChange(id, inputState.value, inputState.isValid);
     }
   }, [inputState, onInputChange, id]);
@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
   label: {
     fontFamily: "open-sans-bold",
     marginVertical: 8,
+    fontSize: 16,
   },
   input: {
     paddingHorizontal: 2,

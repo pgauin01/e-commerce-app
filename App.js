@@ -7,6 +7,8 @@ import CartReducer from "./store/reducers/Cart";
 import OrderReducer from "./store/reducers/orders";
 import NavigationContainer from "./navigation/NavigationContainer";
 import AuthReducer from "./store/reducers/Auth";
+import AddressReducer from "./store/reducers/Address";
+import AdminReducer from "./store/reducers/Admin";
 import { AppLoading } from "expo";
 import * as Font from "expo-font";
 import { composeWithDevTools } from "redux-devtools-extension";
@@ -16,6 +18,8 @@ const rootReducer = combineReducers({
   cart: CartReducer,
   orders: OrderReducer,
   auth: AuthReducer,
+  address: AddressReducer,
+  admin: AdminReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(Thunk));

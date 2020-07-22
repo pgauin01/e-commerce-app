@@ -121,7 +121,6 @@ const ProductOverviewScreen = (props) => {
 
   const AddToCart = (item) => {
     dispatch(cartActions.addToCart(item));
-    props.navigation.setParams({ cartTotal: cartLength });
   };
 
   return (

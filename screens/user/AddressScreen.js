@@ -7,6 +7,7 @@ import {
   FlatList,
   Alert,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import CustomHeaderButton from "../../components/UI/HeaderButton";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -44,6 +45,10 @@ const AddressScreen = (props) => {
     });
   };
 
+  const addAddress = () => {
+    props.navigation.navigate("EditAddress");
+  };
+
   const deleteAddressHandler = (id) => {
     Alert.alert("Are you sure?", "Do you really want to delete this item?", [
       { text: "No", style: "default" },
@@ -78,7 +83,21 @@ const AddressScreen = (props) => {
   if (userAddress.length === 0) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>No Address Found.Add some</Text>
+        <Text style={styles.textImage}>No Address Found</Text>
+        <Image
+          style={styles.image}
+          source={{
+            uri:
+              "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-b62a8.appspot.com/o/assests%2Flocation%20(1).png?alt=media&token=ed7eb7bf-b3a5-41d4-b6e2-0616c9acd71c",
+          }}
+        />
+        <View style={styles.buttons}>
+          <Button
+            title="Add New Address"
+            color={Colors.primary}
+            onPress={addAddress}
+          />
+        </View>
       </View>
     );
   }
@@ -146,6 +165,18 @@ AddressScreen.navigationOptions = (navData) => {
 };
 
 const styles = StyleSheet.create({
+  image: {
+    width: 128,
+    height: 128,
+  },
+  textImage: {
+    paddingBottom: 10,
+    fontFamily: "open-sans-bold",
+    fontSize: 16,
+  },
+  buttons: {
+    paddingTop: 10,
+  },
   centered: {
     flex: 1,
     alignItems: "center",

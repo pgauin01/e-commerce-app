@@ -61,7 +61,9 @@ export const setProducts = () => {
             resData[key].description,
             resData[key].price,
             resData[key].imgName,
-            resData[key].isfeatured
+            resData[key].isfeatured,
+            resData[key].inStock,
+            resData[key].oldprice
           )
         );
       }
@@ -76,7 +78,15 @@ export const setProducts = () => {
   };
 };
 
-export const createItem = (title, imageUrl, price, description, imgName) => {
+export const createItem = (
+  title,
+  imageUrl,
+  price,
+  description,
+  imgName,
+  inStock,
+  oldprice
+) => {
   return async (dispatch, getState) => {
     const token = getState().auth.token;
     const userId = getState().auth.userId;
@@ -94,6 +104,8 @@ export const createItem = (title, imageUrl, price, description, imgName) => {
           price,
           description,
           imgName,
+          inStock,
+          oldprice,
           ownerId: userId,
         }),
       }
@@ -109,13 +121,22 @@ export const createItem = (title, imageUrl, price, description, imgName) => {
         price,
         description,
         imgName,
+        inStock,
+        oldprice,
         ownerId: userId,
       },
     });
   };
 };
 
-export const updateItem = (pid, title, price, description) => {
+export const updateItem = (
+  pid,
+  title,
+  price,
+  description,
+  inStock,
+  oldprice
+) => {
   return async (dispatch, getState) => {
     const token = getState().auth.token;
     const response = await fetch(
@@ -129,6 +150,8 @@ export const updateItem = (pid, title, price, description) => {
           title,
           price,
           description,
+          inStock,
+          oldprice,
         }),
       }
     );
@@ -141,6 +164,8 @@ export const updateItem = (pid, title, price, description) => {
       productData: {
         title,
         description,
+        inStock,
+        oldprice,
       },
     });
   };

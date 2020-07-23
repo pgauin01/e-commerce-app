@@ -27,6 +27,12 @@ const CartItem = (props) => {
     <View style={styles.cartItem}>
       <View style={styles.itemData}>
         <Text style={styles.quantity}>{props.quantity}</Text>
+        {props.img ? (
+          <Image
+            style={{ width: 30, height: 30, marginRight: 5 }}
+            source={{ uri: props.img }}
+          />
+        ) : null}
         <Image
           style={{ width: 30, height: 30, marginRight: 5 }}
           source={{ uri: props.source }}
@@ -72,7 +78,7 @@ const CartItem = (props) => {
 
 const styles = StyleSheet.create({
   cartItem: {
-    padding: 15,
+    padding: 5,
     backgroundColor: "white",
     flexDirection: "row",
     justifyContent: "space-between",

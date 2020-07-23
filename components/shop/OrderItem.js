@@ -26,6 +26,7 @@ const OrderItem = (props) => {
               quantity={cartItem.quantity}
               title={cartItem.productTitle}
               amount={cartItem.productTotal}
+              img={cartItem.prodImg}
 
               // source={cartItem.imageUrl}
             />

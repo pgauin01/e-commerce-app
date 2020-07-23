@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 15,
     elevation: 5,
-    backgroundColor: "#ccc",
+    backgroundColor: "#E0E0E0",
     marginBottom: 10,
   },
   addressRow: {
@@ -32,12 +32,12 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: "open-sans",
-    fontSize: 18,
+    fontSize: 14,
     // color: "white",
   },
   textBold: {
     fontFamily: "open-sans-bold",
-    fontSize: 18,
+    fontSize: 14,
   },
 });
 

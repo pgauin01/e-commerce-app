@@ -5,6 +5,7 @@ import { SearchBar } from "react-native-elements";
 import SearchItem from "../../components/shop/SearchItem";
 import CustomHeaderButton from "../../components/UI/HeaderButton";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import Colors from "../../constants/Colors";
 
 const SearchScreen = (props) => {
   const [searchData, setSearchData] = useState([]);
@@ -62,7 +63,7 @@ const SearchScreen = (props) => {
         // ListHeaderComponent={this.renderHeader}
       />
       <View style={styles.buttonContainer}>
-        <Button title="Go back" onPress={goHome} />
+        <Button title="Go back" color={Colors.primary} onPress={goHome} />
       </View>
     </View>
   );

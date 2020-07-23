@@ -19,9 +19,14 @@ const ProductItem = (props) => {
             </View>
             <View style={styles.details}>
               <Text style={styles.title}>{props.title}</Text>
-              <Text style={styles.price}>${props.price.toFixed(2)}</Text>
+              <View style={styles.priceRow}>
+                <Text style={styles.price}>₹{props.oldPrice}</Text>
+                <Text style={styles.newPrice}>₹{props.price.toFixed(2)}</Text>
+              </View>
             </View>
-            <View style={styles.actions}>{props.children}</View>
+            <View style={props.single ? styles.action : styles.actions}>
+              {props.children}
+            </View>
           </View>
         </TouchableNativeFeedback>
       </View>
@@ -31,13 +36,14 @@ const ProductItem = (props) => {
 
 const styles = StyleSheet.create({
   product: {
-    margin: 15,
+    margin: 10,
     // alignItems: "center",
-    justifyContent: "center",
+    flex: 1,
+    // justifyContent: "center",
     elevation: 4,
     borderRadius: 10,
     backgroundColor: "white",
-    height: 300,
+    height: 250,
   },
   touchable: {
     borderRadius: 10,
@@ -55,18 +61,19 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   title: {
-    fontSize: 18,
+    fontSize: 13,
     marginVertical: 2,
     fontFamily: "open-sans-bold",
   },
   price: {
     fontSize: 14,
     color: "#888",
+    textDecorationLine: "line-through",
     fontFamily: "open-sans",
   },
   details: {
     alignItems: "center",
-    height: "15%",
+    height: "20%",
     padding: 10,
   },
   actions: {
@@ -74,7 +81,22 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 20,
     alignItems: "center",
-    height: "25%",
+    height: "20%",
+  },
+  action: {
+    flexDirection: "row",
+    justifyContent: "center",
+    paddingHorizontal: 25,
+    alignItems: "center",
+    height: "20%",
+  },
+  priceRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingBottom: 10,
+  },
+  newPrice: {
+    paddingLeft: 5,
   },
 });
 

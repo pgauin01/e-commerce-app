@@ -50,7 +50,7 @@ class Crousel extends Component {
     const { selectedIndex } = this.state;
 
     return (
-      <View style={{ height: "100%", width: "100%" }}>
+      <View style={{ marginTop: 5, height: "100%", width: "100%" }}>
         <ScrollView
           horizontal
           pagingEnabled

@@ -209,6 +209,7 @@ const EditAddressScreen = (props) => {
           initialValue={editedAddress ? editedAddress.mobile : ""}
           initiallyValid={!!editedAddress}
           required
+          minLength={10}
         />
 
         <Input

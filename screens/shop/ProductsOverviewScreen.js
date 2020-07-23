@@ -8,6 +8,7 @@ import {
   StyleSheet,
   ScrollView,
   RefreshControl,
+  TouchableNativeFeedback,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -21,18 +22,19 @@ import Slider from "../../components/UI/Slider";
 import Colors from "../../constants/Colors";
 
 const images = [
-  "https://images.pexels.com/photos/3046632/pexels-photo-3046632.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-  "https://images.pexels.com/photos/2203132/pexels-photo-2203132.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-  "https://images.pexels.com/photos/2098427/pexels-photo-2098427.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-  "https://images.pexels.com/photos/2529787/pexels-photo-2529787.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-b62a8.appspot.com/o/slider%2Fslide_1.png?alt=media&token=f4d512ba-7907-45c7-b69d-dac1b0e8f46e",
+  "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-b62a8.appspot.com/o/slider%2Fslide_2.png?alt=media&token=57439c02-f4b9-4d88-b843-186fef0fa149",
+  "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-b62a8.appspot.com/o/slider%2Fslide_3.png?alt=media&token=9f9eff25-25bb-4719-9350-10544baea706",
+  "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-b62a8.appspot.com/o/slider%2Fslide_4.png?alt=media&token=b8c6e0dd-30dc-4ffe-8ab9-0d1c121edf56",
+  "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-b62a8.appspot.com/o/slider%2Fslide_5.png?alt=media&token=6a5a6e11-fc3f-4fc5-92cd-3a53eae8ba0c",
 ];
 
 const ProductOverviewScreen = (props) => {
+  
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setIsError] = useState();
   const products = useSelector((state) => state.products.availableProducts);
-  // console.log(products);
 
   const featuredProduct = products.filter((el) => el.isfeatured === true);
   // console.log(featuredProduct);
@@ -42,8 +44,11 @@ const ProductOverviewScreen = (props) => {
   const loadProducts = useCallback(async () => {
     setIsError(null);
     setIsRefreshing(true);
+    setIsLoading(true);
+
     try {
       await dispatch(productActions.setProducts());
+      setIsLoading(false);
     } catch (err) {
       setIsError(err.message);
     }
@@ -51,7 +56,10 @@ const ProductOverviewScreen = (props) => {
   }, [dispatch, setIsError, setIsLoading]);
 
   useEffect(() => {
+    setIsLoading(true);
+
     dispatch(adminActions.isAdmin());
+    setIsLoading(false);
   }, [dispatch]);
 
   const loadAddress = useCallback(async () => {
@@ -130,38 +138,55 @@ const ProductOverviewScreen = (props) => {
         <RefreshControl refreshing={isRefreshing} onRefresh={loadProducts} />
       }
     >
-      <View style={{ marginTop: 10, width: "100%", height: 300 }}>
+      <View style={{ marginTop: 10, width: "100%", height: 230 }}>
         <Slider images={images} />
       </View>
       <View style={styles.textContainer}>
-        <Text style={styles.textStyle}>Featured Products</Text>
+        <Text style={styles.textStyle}>Today's Deal</Text>
       </View>
       <FlatList
         data={featuredProduct}
         keyExtractor={(item) => item.id}
+        numColumns={2}
         renderItem={(itemData) => (
           <ProductItem
+            single
             image={itemData.item.imageUrl}
             title={itemData.item.title}
             price={itemData.item.price}
+            oldPrice={itemData.item.oldprice}
             onSelect={() => {
               SelectHandler(itemData.item.id, itemData.item.title);
             }}
           >
-            <Button
+            {/* <Button
               color={Colors.primary}
               title="View Details"
               onPress={() => {
                 SelectHandler(itemData.item.id, itemData.item.title);
               }}
-            />
-            <Button
-              color={Colors.primary}
-              title="Add to Cart"
+            /> */}
+
+            <TouchableNativeFeedback
               onPress={() => {
                 AddToCart(itemData.item);
               }}
-            />
+            >
+              <View style={styles.button}>
+                <Text style={{ color: "white" }}>
+                  {itemData.item.inStock ? "Add to Cart" : "Out of Stock"}
+                </Text>
+              </View>
+            </TouchableNativeFeedback>
+
+            {/* <Button
+              color={Colors.primary}
+              title={itemData.item.inStock ? "Add to Cart" : "Out of Stock"}
+              disabled={!itemData.item.inStock}
+              onPress={() => {
+                AddToCart(itemData.item);
+              }}
+            /> */}
           </ProductItem>
         )}
       />
@@ -172,26 +197,32 @@ const ProductOverviewScreen = (props) => {
         onRefresh={loadProducts}
         refreshing={isRefreshing}
         data={products}
+        numColumns={2}
         keyExtractor={(item) => item.id}
         renderItem={(itemData) => (
           <ProductItem
+            single
             image={itemData.item.imageUrl}
             title={itemData.item.title}
             price={itemData.item.price}
+            oldPrice={itemData.item.oldprice}
             onSelect={() => {
               SelectHandler(itemData.item.id, itemData.item.title);
             }}
           >
-            <Button
+            {/* <Button
               color={Colors.primary}
               title="View Details"
+              style={{ fontSize: 13 }}
               onPress={() => {
                 SelectHandler(itemData.item.id, itemData.item.title);
               }}
-            />
+            /> */}
+
             <Button
               color={Colors.primary}
-              title="Add to Cart"
+              title={itemData.item.inStock ? "Add to Cart" : "Out of Stock"}
+              disabled={!itemData.item.inStock}
               onPress={() => {
                 AddToCart(itemData.item);
               }}
@@ -248,7 +279,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   textContainer: {
-    marginTop: 10,
+    marginTop: 15,
     padding: 10,
     justifyContent: "center",
     alignItems: "center",
@@ -256,6 +287,13 @@ const styles = StyleSheet.create({
   textStyle: {
     fontFamily: "open-sans-bold",
     fontSize: 22,
+  },
+  button: {
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    elevation: 5,
+    // borderRadius: 10,
   },
 });
 

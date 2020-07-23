@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   TextInput,
   Picker,
+  Image,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import Colors from "../../constants/Colors";
@@ -82,7 +83,12 @@ const CartScreen = (props) => {
   const onOrderHandler = async () => {
     setIsLoding(true);
     await dispatch(
-      orderActions.order(cartItem, TotalAmount, loadedAddress[addressChange])
+      orderActions.order(
+        cartItem,
+        TotalAmount,
+        loadedAddress[addressChange],
+        cartItem.prodImg
+      )
     );
     setIsLoding(false);
   };
@@ -142,8 +148,24 @@ const CartScreen = (props) => {
 
   if (cartItem.length == 0) {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>No Products Found in Cart..</Text>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={styles.textImage}>No products found in cart</Text>
+        <Image
+          style={styles.image}
+          source={{
+            uri:
+              "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-b62a8.appspot.com/o/assests%2Fempty-cart.png?alt=media&token=853ebacb-ce8e-44b3-83e0-9a05fa6b6905",
+          }}
+        />
+        <View style={styles.buttons}>
+          <Button
+            title="Start Shopping "
+            color={Colors.primary}
+            onPress={() => {
+              props.navigation.navigate("ProductsOverview");
+            }}
+          />
+        </View>
       </View>
     );
   }
@@ -343,6 +365,18 @@ const styles = StyleSheet.create({
   offerValid: {
     color: "green",
     fontFamily: "open-sans-bold",
+  },
+  image: {
+    width: 128,
+    height: 128,
+  },
+  textImage: {
+    paddingBottom: 10,
+    fontFamily: "open-sans-bold",
+    fontSize: 16,
+  },
+  buttons: {
+    paddingTop: 10,
   },
 });
 

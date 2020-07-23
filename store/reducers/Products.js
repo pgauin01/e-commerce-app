@@ -27,7 +27,9 @@ export default (state = initialState, action) => {
         action.productData.title,
         action.productData.imageUrl,
         action.productData.description,
-        action.productData.price
+        action.productData.price,
+        action.productData.inStock,
+        action.productData.oldprice
       );
       return {
         ...state,
@@ -44,7 +46,9 @@ export default (state = initialState, action) => {
         action.productData.title,
         action.productData.imageUrl,
         action.productData.description,
-        state.userProducts[ProductuserIndex].price
+        state.userProducts[ProductuserIndex].price,
+        action.productData.inStock,
+        action.productData.oldprice
       );
       const updatedUserProduct = [...state.userProducts];
       updatedUserProduct[ProductuserIndex] = updateduseProduct;
@@ -57,7 +61,9 @@ export default (state = initialState, action) => {
         action.productData.title,
         action.productData.imageUrl,
         action.productData.description,
-        state.availableProducts[ProductAvilIndex].price
+        state.availableProducts[ProductAvilIndex].price,
+        action.productData.inStock,
+        action.productData.oldprice
       );
       const updatedavailProduct = [...state.availableProducts];
       updatedavailProduct[ProductAvilIndex] = updatedavaProduct;

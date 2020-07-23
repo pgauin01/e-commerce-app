@@ -9,6 +9,7 @@ import {
   Platform,
   ActivityIndicator,
 } from "react-native";
+import { RadioButton } from "react-native-paper";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import HeaderButton from "../../components/UI/HeaderButton";
 import { useSelector, useDispatch } from "react-redux";
@@ -44,16 +45,20 @@ const formReducer = (state, action) => {
 };
 
 const EditProductScreen = (props) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setIsError] = useState();
-  const [ImageName, setImageName] = useState();
-  const [image, setImage] = useState();
-  // console.log(ImageName);
-  // console.log(image);
   const prodId = props.navigation.getParam("productId");
   const editedProduct = useSelector((state) =>
     state.products.userProducts.find((prod) => prod.id === prodId)
   );
+  const [checked, setIsChecked] = useState(
+    editedProduct ? editedProduct.inStock : true
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setIsError] = useState();
+  const [ImageName, setImageName] = useState();
+  const [image, setImage] = useState();
+
+  // console.log(editedProduct.inStock);
+
   const dispatch = useDispatch();
 
   const [formState, dispatchFormState] = useReducer(formReducer, {
@@ -62,12 +67,14 @@ const EditProductScreen = (props) => {
       // imageUrl: editedProduct ? editedProduct.imageUrl : "",
       description: editedProduct ? editedProduct.description : "",
       price: editedProduct ? editedProduct.price : "",
+      oldprice: editedProduct ? editedProduct.oldprice : "",
     },
     inputValidities: {
       title: editedProduct ? true : false,
       // imageUrl: editedProduct ? true : false,
       description: editedProduct ? true : false,
       price: editedProduct ? true : false,
+      oldprice: editedProduct ? editedProduct.oldprice : "",
     },
     formIsValid: editedProduct ? true : false,
   });
@@ -101,7 +108,8 @@ const EditProductScreen = (props) => {
             formState.inputValues.title,
             +formState.inputValues.price,
             formState.inputValues.description,
-            ImageName
+            checked,
+            oldprice
           )
         );
       } else {
@@ -111,7 +119,9 @@ const EditProductScreen = (props) => {
             image,
             +formState.inputValues.price,
             formState.inputValues.description,
-            ImageName
+            ImageName,
+            checked,
+            oldprice
           )
         );
       }
@@ -120,7 +130,7 @@ const EditProductScreen = (props) => {
       setIsError(err.message);
     }
     setIsLoading(false);
-  }, [dispatch, prodId, formState, image, ImageName]);
+  }, [dispatch, prodId, formState, image, ImageName, checked]);
 
   useEffect(() => {
     props.navigation.setParams({ submit: submitHandler });
@@ -186,6 +196,18 @@ const EditProductScreen = (props) => {
         /> */}
         {/* {editedProduct ? null : ( */}
         <Input
+          id="oldprice"
+          label="Old Price"
+          errorText="Please enter a valid price!"
+          keyboardType="decimal-pad"
+          returnKeyType="next"
+          initialValue={editedProduct ? editedProduct.oldprice.toString() : ""}
+          onInputChange={inputChangeHandler}
+          initiallyValid={!!editedProduct}
+          required
+          min={0.1}
+        />
+        <Input
           id="price"
           label="Price"
           errorText="Please enter a valid price!"
@@ -213,6 +235,37 @@ const EditProductScreen = (props) => {
           required
           minLength={5}
         />
+        <View style={styles.radioButton}>
+          <Text style={{ fontFamily: "open-sans-bold", fontSize: 16 }}>
+            Product Availability
+          </Text>
+          <RadioButton.Group
+            onValueChange={(v) => {
+              setIsChecked(v);
+            }}
+          >
+            <View>
+              <Text>InStock</Text>
+              <RadioButton
+                value={true}
+                status={checked === true ? "checked" : "unchecked"}
+                onPress={() => {
+                  setIsChecked(true);
+                }}
+              />
+            </View>
+            <View>
+              <Text>Out of Stock</Text>
+              <RadioButton
+                value={false}
+                status={checked === false ? "checked" : "unchecked"}
+                onPress={() => {
+                  setIsChecked(false);
+                }}
+              />
+            </View>
+          </RadioButton.Group>
+        </View>
         {editedProduct ? null : (
           <ImagePicker
             imgName={ImgNameHandler}
@@ -252,6 +305,12 @@ const styles = StyleSheet.create({
   centered: {
     flex: 1,
     justifyContent: "center",
+    alignContent: "center",
+  },
+  radioButton: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    paddingVertical: 10,
     alignContent: "center",
   },
 });

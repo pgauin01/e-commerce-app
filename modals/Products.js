@@ -7,7 +7,9 @@ class Product {
     description,
     price,
     imgName,
-    isfeatured
+    isfeatured,
+    inStock,
+    oldprice
   ) {
     this.id = id;
     this.ownerId = ownerId;
@@ -17,6 +19,8 @@ class Product {
     this.price = price;
     this.imgName = imgName;
     this.isfeatured = isfeatured;
+    this.inStock = inStock;
+    this.oldprice = oldprice;
   }
 }
 
